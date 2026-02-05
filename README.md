@@ -6,7 +6,7 @@ A modern React-based chat interface for document-based question answering with m
 
 **Hosted Application**: [https://union-budget-rag-frontend.vercel.app](https://union-budget-rag-frontend.vercel.app)
 
-The frontend is connected to the hosted backend API at `https://hcl-test.onrender.com/api`
+The frontend is connected to the hosted backend API at `https://union-budget-rag-backend.onrender.com/api`
 
 ## Architecture
 
