@@ -1,73 +1,175 @@
-# Welcome to your Lovable project
+# Union Budget RAG Frontend
 
-## Project info
+A modern React-based chat interface for document-based question answering with multi-language support, voice input/output, and real-time chat management.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🌐 Live Demo
 
-## How can I edit this code?
+**Hosted Application**: [https://union-budget-rag-frontend.vercel.app](https://union-budget-rag-frontend.vercel.app)
 
-There are several ways of editing your application.
+The frontend is connected to the hosted backend API at `https://hcl-test.onrender.com/api`
 
-**Use Lovable**
+## Architecture
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Application Flow
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+User
+  ↓
+React App (Vite + TypeScript)
+  ├── AuthContext (JWT management)
+  ├── React Router (Route protection)
+  └── React Query (API state management)
+  ↓
+API Client (axios-based)
+  ↓
+Backend API (Flask)
 ```
 
-**Edit a file directly in GitHub**
+### Component Structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+**Pages**:
+- `pages/Auth.tsx` - Login/Register
+- `pages/Index.tsx` - Main chat interface
+- `pages/NotFound.tsx` - 404 page
 
-**Use GitHub Codespaces**
+**Chat Components**:
+- `components/chat/ChatArea.tsx` - Message display area
+- `components/chat/ChatInput.tsx` - Message input with voice support
+- `components/chat/ChatSidebar.tsx` - Conversation list
+- `components/chat/ChatMessage.tsx` - Individual message rendering
+- `components/chat/MarkdownContent.tsx` - Markdown rendering
+- `components/chat/TypingIndicator.tsx` - Loading states
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Services**:
+- `services/authService.ts` - Authentication API calls
+- `services/chatService.ts` - Chat API calls
 
-## What technologies are used for this project?
+**Hooks**:
+- `hooks/useChat.ts` - Chat state management
+- `hooks/useSpeechRecognition.ts` - Voice input
+- `hooks/useSpeechSynthesis.ts` - Voice output
+- `hooks/useTheme.ts` - Dark/light theme
 
-This project is built with:
+### Data Flow
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+1. User sends message (text/voice)
+   ↓
+2. useChat hook → chatService.sendMessage()
+   ↓
+3. API Client → POST /api/chats/{id}/message
+   ↓
+4. Backend processes (RAG pipeline)
+   ↓
+5. Response received → Update React Query cache
+   ↓
+6. UI updates (message displayed)
+   ↓
+7. Optional: Text-to-speech (if enabled)
+```
 
-## How can I deploy this project?
+### Key Features
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- **Real-time Chat**: React Query for efficient state management
+- **Voice Input/Output**: Web Speech API integration
+- **Multi-language**: Automatic language detection and display
+- **Markdown Rendering**: Rich text message formatting
+- **Theme Support**: Dark/light mode toggle
+- **Responsive Design**: Mobile-friendly UI with shadcn/ui components
 
-## Can I connect a custom domain to my Lovable project?
+## Setup
 
-Yes, you can!
+### Prerequisites
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- Node.js 18+ (or Bun)
+- npm/yarn/bun
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Installation
+
+1. **Install dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   # or
+   bun install
+   ```
+
+2. **Configure API endpoint** (edit `src/lib/api.ts`):
+   ```typescript
+   const API_BASE_URL = 'http://localhost:4000/api';
+   ```
+
+3. **Start development server**:
+   ```bash
+   npm run dev
+   # or
+   bun run dev
+   ```
+
+App runs at `http://localhost:5173`
+
+## 🌐 Production Deployment
+
+The frontend is deployed on **Vercel**:
+- **Live Application**: [https://union-budget-rag-frontend.vercel.app](https://union-budget-rag-frontend.vercel.app)
+- **Backend API**: [https://hcl-test.onrender.com/api](https://hcl-test.onrender.com/api)
+
+### Build for Production
+
+```bash
+npm run build
+# or
+bun run build
+```
+
+## Tech Stack
+
+- **Framework**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **UI Library**: shadcn/ui (Radix UI + Tailwind CSS)
+- **State Management**: React Query (TanStack Query)
+- **Routing**: React Router v6
+- **HTTP Client**: Axios
+- **Voice**: Web Speech API
+- **Styling**: Tailwind CSS
+
+## Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── auth/              # Login/Register forms
+│   │   ├── chat/              # Chat UI components
+│   │   └── ui/                # shadcn/ui components
+│   ├── contexts/
+│   │   └── AuthContext.tsx    # Authentication context
+│   ├── hooks/
+│   │   ├── useChat.ts         # Chat state management
+│   │   ├── useSpeechRecognition.ts
+│   │   └── useSpeechSynthesis.ts
+│   ├── pages/
+│   │   ├── Auth.tsx
+│   │   ├── Index.tsx
+│   │   └── NotFound.tsx
+│   ├── services/
+│   │   ├── authService.ts
+│   │   └── chatService.ts
+│   ├── lib/
+│   │   ├── api.ts             # API client
+│   │   └── utils.ts           # Utilities
+│   └── App.tsx                # Root component
+├── public/                    # Static assets
+└── package.json
+```
+
+## Features
+
+- **Authentication**: JWT-based login/register
+- **Chat Management**: Create, list, delete conversations
+- **Message Display**: Markdown rendering with source citations
+- **Voice Input**: Speech-to-text for queries
+- **Voice Output**: Text-to-speech for responses
+- **Language Detection**: Automatic language display
+- **Theme Toggle**: Dark/light mode
+- **Responsive**: Mobile and desktop support
